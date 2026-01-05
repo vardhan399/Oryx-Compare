@@ -1,7 +1,8 @@
 {
   "dependencies": {
-    "aircode": "0.6.2",
-    "axios": "1.5.0",
+    "axios": "^1.5.0",
+    "cors": "^2.8.5",
+    "express": "^5.2.1",
     "typescript": "4.9.5"
   }
 }

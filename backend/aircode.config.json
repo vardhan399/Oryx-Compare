@@ -1,7 +1,0 @@
-{
-  "name": "coins-table",
-  "runtime": "node/v18",
-  "retion": "US",
-  "envs": [],
-  "typescript": true
-}
