@@ -32,8 +32,7 @@ function App() {
     if (amount !== prevAmount) {
       setLoading(true);
 
-      axios
-        .post("http://localhost:5000/offers", {
+      axios.post(`${import.meta.env.VITE_BACKEND_URL}/offers`, {
           amount: Number(amount),
         })
         .then((res) => {
