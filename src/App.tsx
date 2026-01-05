@@ -11,41 +11,44 @@ type CachedResult = {
   btc: string;
 };
 
-type OfferResults = { [keys: string]: string };
+type OfferResults = { [key: string]: string };
 
 const defaultAmount = "100";
+
+// ✅ BACKEND URL FROM VERCEL ENV
+const API_URL = import.meta.env.VITE_BACKEND_URL;
 
 function App() {
   const [prevAmount, setPrevAmount] = useState(defaultAmount);
   const [amount, setAmount] = useState(defaultAmount);
-
-  // ✅ FIX: removed unused setter
-  const [cachedResults] = useState<CachedResult[]>([]);
-
+  const [cachedResults] = useState<CachedResult[]>([]); // ✅ FIXED
   const [offerResults, setOfferResults] = useState<OfferResults>({});
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
 
-  // No cache for now
   useEffect(() => {
     setLoading(false);
   }, []);
 
-  useDebouncedEffect(() => {
-    if (amount === defaultAmount) return;
-    if (amount !== prevAmount) {
-      setLoading(true);
+  useDebouncedEffect(
+    () => {
+      if (amount === defaultAmount) return;
+      if (amount !== prevAmount) {
+        setLoading(true);
 
-      axios
-        .post(`${import.meta.env.VITE_BACKEND_URL}/offers`, {
-          amount: Number(amount),
-        })
-        .then((res) => {
-          setOfferResults(res.data);
-          setPrevAmount(amount);
-          setLoading(false);
-        });
-    }
-  }, 300, [amount]);
+        axios
+          .post(`${API_URL}/offers`, {
+            amount: Number(amount),
+          })
+          .then((res) => {
+            setOfferResults(res.data);
+            setPrevAmount(amount);
+          })
+          .finally(() => setLoading(false));
+      }
+    },
+    300,
+    [amount]
+  );
 
   const sortedCache: CachedResult[] = sortBy(cachedResults, "btc").reverse();
 
@@ -57,8 +60,7 @@ function App() {
     "btc"
   ).reverse();
 
-  const showCached = amount === defaultAmount;
-  const rows = showCached ? sortedCache : sortedResults;
+  const rows = amount === defaultAmount ? sortedCache : sortedResults;
 
   return (
     <main className="max-w-2xl mx-auto px-4 py-8">
