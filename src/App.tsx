@@ -18,11 +18,14 @@ const defaultAmount = "100";
 function App() {
   const [prevAmount, setPrevAmount] = useState(defaultAmount);
   const [amount, setAmount] = useState(defaultAmount);
-  const [cachedResults, setCachedResults] = useState<CachedResult[]>([]);
+
+  // ✅ FIX: removed unused setter
+  const [cachedResults] = useState<CachedResult[]>([]);
+
   const [offerResults, setOfferResults] = useState<OfferResults>({});
   const [loading, setLoading] = useState(true);
 
-  // No cache for now (local backend)
+  // No cache for now
   useEffect(() => {
     setLoading(false);
   }, []);
@@ -32,7 +35,8 @@ function App() {
     if (amount !== prevAmount) {
       setLoading(true);
 
-      axios.post(`${import.meta.env.VITE_BACKEND_URL}/offers`, {
+      axios
+        .post(`${import.meta.env.VITE_BACKEND_URL}/offers`, {
           amount: Number(amount),
         })
         .then((res) => {
@@ -58,20 +62,17 @@ function App() {
 
   return (
     <main className="max-w-2xl mx-auto px-4 py-8">
-   <h1
-  className="
-    uppercase text-6xl text-center
-    font-extrabold tracking-wide
-    bg-gradient-to-r from-sky-400 via-cyan-300 to-indigo-400
-    bg-clip-text text-transparent
-    drop-shadow-[0_0_12px_rgba(56,189,248,0.25)]
-  "
->
-  Find Cheapest BTC
-</h1>
-
-
-
+      <h1
+        className="
+          uppercase text-6xl text-center
+          font-extrabold tracking-wide
+          bg-gradient-to-r from-sky-400 via-cyan-300 to-indigo-400
+          bg-clip-text text-transparent
+          drop-shadow-[0_0_12px_rgba(56,189,248,0.25)]
+        "
+      >
+        Find Cheapest BTC
+      </h1>
 
       <div className="flex justify-center mt-6">
         <AmountInput
@@ -89,7 +90,7 @@ function App() {
               key={result.provider}
               providerName={result.provider}
               btc={result.btc}
-              isBest={index === 0}   // ⭐ cheapest highlighted here
+              isBest={index === 0}
             />
           ))}
       </div>
